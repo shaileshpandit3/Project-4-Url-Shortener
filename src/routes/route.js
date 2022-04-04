@@ -1,2 +1,12 @@
 const express = require("express")
-const route = express.Router();
+const router = express.Router();
+const urlController = require('../controllers/urlController')
+
+router.get('/test-me',function(req,res){
+    res.send("My first ever api!")
+})
+
+
+
+
+module.exports = router

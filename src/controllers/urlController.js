@@ -2,6 +2,7 @@
 const urlModel = require('../models/urlModel')
 const shortid = require('shortid');
 const { base } = require('../models/urlModel');
+const validurl = require('valid-url')
 
 //>>>>>>>>>>>>>>>>>>>>> Generate short Url <<<<<<<<<<<<<<<<<<<<<<<
 
@@ -36,3 +37,22 @@ const shortUrl = async function(req,res){
 }
 
 module.exports.newUrl = shortUrl;
+
+
+const getUrl = async function(req,res){
+    try{
+        const shortid = req.params
+        const result = await urlModel.findOne({shortid:shortid})
+
+        if(!result){
+            return res.status(404).send({status:false,msg:"ShortUrl doesn't exist"})
+        }
+        res.direct(result.url)
+
+
+    }catch(error){
+        return res.status(500).send({status:false,error:error.message});
+    }
+}
+
+module.exports.getUrl = getUrl

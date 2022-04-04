@@ -38,16 +38,17 @@ const shortUrl = async function(req,res){
 
 module.exports.newUrl = shortUrl;
 
+//>>>>>>>>>>>>>>>>>>>>>>> Redirect to the original url <<<<<<<<<<<<<<<<<<<<
 
 const getUrl = async function(req,res){
     try{
-        const shortid = req.params
-        const result = await urlModel.findOne({shortid:shortid})
+        const shortid = req.params.urlCode
+        const result = await urlModel.findOne({urlCode:shortid})
 
         if(!result){
             return res.status(404).send({status:false,msg:"ShortUrl doesn't exist"})
         }
-        res.direct(result.url)
+        res.redirect(result.url)
 
 
     }catch(error){

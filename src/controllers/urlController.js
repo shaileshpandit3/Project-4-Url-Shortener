@@ -36,7 +36,7 @@ const shortUrl = async function(req,res){
     }
 }
 
-module.exports.newUrl = shortUrl;
+module.exports.shortUrl = shortUrl;
 
 //>>>>>>>>>>>>>>>>>>>>>>> Redirect to the original url <<<<<<<<<<<<<<<<<<<<
 
@@ -48,7 +48,8 @@ const getUrl = async function(req,res){
         if(!result){
             return res.status(404).send({status:false,msg:"ShortUrl doesn't exist"})
         }
-        res.redirect(result.url)
+        
+        return res.status(200).redirect(result.longUrl)
 
 
     }catch(error){

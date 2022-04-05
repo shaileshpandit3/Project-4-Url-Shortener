@@ -7,7 +7,7 @@ router.get('/test-me',function(req,res){
 })
 
 
-router.post("/shortUrl",urlController.shortUrl)  
+router.post("/shortUrl",urlController.createShortUrl)  
 
 router.get("/:urlCode",urlController.getUrl)
 

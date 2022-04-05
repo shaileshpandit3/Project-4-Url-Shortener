@@ -1,4 +1,3 @@
-// const { base } = require('../models/urlModel');
 const urlModel = require('../models/urlModel')
 const shortid = require('shortid');
 const { base } = require('../models/urlModel');

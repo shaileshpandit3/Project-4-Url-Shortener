@@ -1,34 +1,40 @@
-const urlModel = require('../models/urlModel')
+const urlModel = require('../models/urlModel.js')
 const shortid = require('shortid');
-const { base } = require('../models/urlModel');
-const validurl = require('valid-url')
+const validator = require('../validator/validator.js')
+const config = require('config')
 
 //>>>>>>>>>>>>>>>>>>>>> Generate short Url <<<<<<<<<<<<<<<<<<<<<<<
 
 const shortUrl = async function(req,res){
     try{
         const longUrl = req.body.longUrl.toLowerCase().trim();
-        if(!longUrl){
-            return res.status(400).send({status:false,msg:'Invalid base url'})
+        const baseUrl = config.get('baseUrl')
+        
+        if (!validator.longUrlPresent(longUrl)) {
+            return res.status(400).send({ status: false, msg: "Please enter long Url" })
+        }
+        if (!validator.isValidUrl(longUrl)) {
+            return res.status(400).send({ status: false, msg: ` 'Please give a valid longUrl' ` })
+        }
+        const urlCode = shortid.generate().toLowerCase()
+        const shortUrl = baseUrl + '/' + urlCode
+        let url = {
+            longUrl,
+            shortUrl,
+            urlCode
+        }
+        let uniqueUrl = await UrlModel.findOne({ urlCode })
+        while (uniqueUrl) {
+            const urlCode = shortid.generate().toLowerCase()
+            const shortUrl = baseUrl + '/' + urlCode
+            url = {
+                longUrl,
+                shortUrl,
+                urlCode
+            }
         }
 
-        const urlCode = shortid.generate()
-
-        const url = await urlModel.findOne({longUrl:longUrl})
-
-        if(url){
-          
-            return res.status(400).send({status:false,msg:'longUrl already exist in the DB'})
-        }
-        const baseUrl = "localhost:3000"
-        const shortUrl = baseUrl+'/'+urlCode
-        const newUrl = {
-            "longUrl":longUrl,
-            "shortUrl":shortUrl,
-            "urlCode":urlCode
-        }
-
-        const createUrl = await urlModel.create(newUrl)
+        const createUrl = await urlModel.create(url)
         return res.status(201).send({status:true,data:createUrl})
     }catch(err){
       return  res.status(500).send({status:false,message:err.message})

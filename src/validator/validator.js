@@ -3,7 +3,7 @@ const isValidUrl = function (value) {
     if (typeof value === "undefined" || value === null) return false;
     if (typeof value === "string" && value.trim().length === 0) return false;
     if (typeof value !== "string") return false
-    if (!(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi.test(value))) return false
+    if (!(/^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/gi.test(value))) return false
     return true;
 };
 

@@ -8,16 +8,6 @@ const isValidUrl = require("valid-url")
 
 // redis initialization
 
-// const redisClient = redis.createClient({host:'redis-13308.c264.ap-south-1-1.ec2.cloud.redislabs.com',port:17454,username:'shailesh-free-db',password:'hKjsottYqwYw75XTWYDvyQlm4iQkI4Ty'});
-
-// redisClient.on('connect',() => {
-//     console.log('connected to redis successfully!');
-// })
-
-// redisClient.on('error',(error) => {
-//     console.log('Redis connection error :', error);
-// })
-
 
 const redisClient = redis.createClient({ host: 'redis-17454.c15.us-east-1-4.ec2.cloud.redislabs.com', port: 17454, username: 'functioup-free-db', password: 'yiIOJJ2luH3yHDzmp0WppDFtuUxn5aqO' });
 
@@ -52,12 +42,12 @@ const createShortUrl = async function (req, res) {
         const { longUrl } = longUrl1
 
         if (!validator.isValidUrl(longUrl)) {
-            return res.status(400).send({ status: false, message: "Long URL required" })
+            return res.status(400).send({ status: false, message: "Please Provide a valid url" })
         }
 
-        if (!(/^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/.test(longUrl))) {
-            return res.status(400).send({ status: false, message: "Invalid LongURL" })
-        }
+        // if (!(/^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/.test(longUrl))) {
+        //     return res.status(400).send({ status: false, message: "Invalid LongURL" })
+        // }
 
 
         if (!longUrl) {
@@ -146,16 +136,17 @@ const getUrl = async function (req, res) {
 
         let cachedData = await GET_ASYNC(req.params.urlCode.trim().toLowerCase());
         if (cachedData) {
+            const dataUrl = JSON.parse(cachedData)
             console.log("data from cache memory")
-            res.status(302).redirect(cachedData);
+            return res.status(302).redirect(dataUrl);
         }
         const shortid = req.params.urlCode
-        const result = await urlModel.findOne({ urlCode: shortid })
+        const result = await urlModel.findOne({shortid })
 
         if (!result) {
             return res.status(404).send({ status: false, msg: "ShortUrl doesn't exist" })
         }
-
+        await SET_ASYNC(`${shortid}`, JSON.stringify(result))
         return res.status(200).redirect(result.longUrl)
 
 

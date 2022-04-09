@@ -143,6 +143,3 @@ return res.status(302).redirect(copy.longUrl);
     };
     
 module.exports.getUrl = getUrl
-
-
- 
